@@ -2,6 +2,30 @@ let problem = {};
 let streak = 0;
 let answered = false;
 
+// Unit categories with conversion bases
+const unitCategories = {
+    length: {
+        name: '長さ',
+        units: ['mm', 'cm', 'm', 'km'],
+        toBase: { 'mm': 1, 'cm': 10, 'm': 1000, 'km': 1000000 }
+    },
+    weight: {
+        name: '重さ',
+        units: ['mg', 'g', 'kg', 't'],
+        toBase: { 'mg': 1, 'g': 1000, 'kg': 1000000, 't': 1000000000 }
+    },
+    volume: {
+        name: '体積',
+        units: ['mm3', 'cm3', 'm3', 'L', 'dL'],
+        toBase: { 'mm3': 1, 'cm3': 1000, 'm3': 1000000000, 'L': 1000000, 'dL': 100000 }
+    },
+    area: {
+        name: '面積',
+        units: ['mm2', 'cm2', 'm2', 'a', 'ha'],
+        toBase: { 'mm2': 1, 'cm2': 100, 'm2': 1000000, 'a': 100000000, 'ha': 10000000000 }
+    }
+};
+
 function updateStreakDisplay() {
     const el = document.getElementById('streakCount');
     if (el) el.textContent = streak;
@@ -41,17 +65,22 @@ function startQuestion() {
 }
 
 function generateRandomQuestion() {
-    const units = ['km','m','cm','mm'];
-    let from = units[Math.floor(Math.random() * units.length)];
-    let to = units[Math.floor(Math.random() * units.length)];
-    while (from === to) to = units[Math.floor(Math.random() * units.length)];
+    const categories = Object.keys(unitCategories);
+    const selectedCategory = categories[Math.floor(Math.random() * categories.length)];
+    const category = unitCategories[selectedCategory];
+    
+    let from = category.units[Math.floor(Math.random() * category.units.length)];
+    let to = category.units[Math.floor(Math.random() * category.units.length)];
+    while (from === to) to = category.units[Math.floor(Math.random() * category.units.length)];
+    
     const value = +(Math.random() * 99 + 1).toFixed(2);
 
     problem = {
         value: value,
         fromUnit: from,
         toUnit: to,
-        answer: convertUnit(value, from, to)
+        category: selectedCategory,
+        answer: convertUnit(value, from, to, selectedCategory)
     };
 
     document.getElementById('questionText').textContent = `${value} ${from} は何 ${to} ですか？`;
@@ -64,14 +93,11 @@ function generateRandomQuestion() {
     if (btn) btn.disabled = false;
 }
 
-function convertUnit(value, from, to) {
-    const toMm = {
-        'mm': 1,
-        'cm': 10,
-        'm': 1000,
-        'km': 1000000
-    };
-    return (value * toMm[from]) / toMm[to];
+function convertUnit(value, from, to, category) {
+    const cat = unitCategories[category];
+    const fromBase = cat.toBase[from];
+    const toBase = cat.toBase[to];
+    return (value * fromBase) / toBase;
 }
 
 function checkAnswer() {
