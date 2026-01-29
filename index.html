@@ -97,6 +97,17 @@
         <h1>📏 単位変換学習アプリ</h1>
         <div id="streak" style="text-align:right; margin-top:-30px; margin-bottom:10px;">連続正解: <span id="streakCount">0</span></div>
         
+        <div style="margin-bottom:20px;">
+            <label for="categorySelect" style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">問題のカテゴリ:</label>
+            <select id="categorySelect" style="width:100%; padding:10px; font-size:16px; border:1px solid #ddd; border-radius:4px;">
+                <option value="all">全部</option>
+                <option value="length">長さ</option>
+                <option value="weight">重さ</option>
+                <option value="volume">体積</option>
+                <option value="area">面積</option>
+            </select>
+        </div>
+        
         <div class="setup" id="setup" style="display:none;">
             <div class="form-group">
                 <label for="value">数値を入力:</label>
